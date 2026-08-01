@@ -16,13 +16,12 @@
 html{scroll-behavior:smooth}
 body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;overflow-x:hidden}
 
-/* LANG — controlled entirely by JS adding/removing classes */
+/* LANG */
 .en{display:none}.pt{display:block}
 body.lang-en .en{display:block}
 body.lang-en .pt{display:none}
 body.lang-pt .en{display:none}
 body.lang-pt .pt{display:block}
-/* inline spans need inline not block */
 span.en,span.pt,a.en,a.pt{display:none}
 body.lang-en span.en,body.lang-en a.en{display:inline}
 body.lang-pt span.pt,body.lang-pt a.pt{display:inline}
@@ -42,8 +41,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:.875rem 2rem;displa
 .nav-btn.discord:hover{background:#4752c4}
 .nav-btn.lang{background:var(--navy2);color:var(--grey);border:1px solid var(--border)}
 .nav-btn.lang.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-.nav-btn.login{background:transparent;color:var(--grey);border:1px solid var(--border)}
-.nav-btn.login:hover{color:var(--blue-light);border-color:var(--blue-light)}
 
 /* HERO */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:8rem 2rem 4rem;position:relative;overflow:hidden}
@@ -160,24 +157,6 @@ section{padding:6rem 2rem}
 .contact-discord{display:inline-flex;align-items:center;gap:.5rem;font-size:13px;font-weight:600;color:var(--grey);text-decoration:none;background:rgba(88,101,242,.15);border:1px solid rgba(88,101,242,.3);border-radius:6px;padding:.5rem 1rem;margin-top:1rem;transition:all .2s}
 .contact-discord:hover{color:#fff;background:rgba(88,101,242,.3)}
 
-/* LOGIN MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(6,11,20,.92);z-index:2000;display:none;align-items:center;justify-content:center;padding:1.5rem}
-.modal-overlay.open{display:flex}
-.modal{background:var(--navy);border:1px solid var(--border);border-radius:12px;padding:2.5rem;max-width:440px;width:100%;position:relative}
-.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--grey);font-size:20px;cursor:pointer}
-.modal-title{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;text-transform:uppercase;color:var(--white);margin-bottom:.5rem}
-.modal-sub{font-size:13px;color:var(--grey);margin-bottom:1.5rem;line-height:1.6}
-.modal-input{width:100%;background:var(--navy2);border:1px solid var(--border);border-radius:6px;padding:.75rem 1rem;color:var(--white);font-family:'Inter',sans-serif;font-size:14px;outline:none;margin-bottom:1rem}
-.modal-input:focus{border-color:var(--blue-light)}
-.modal-btn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:6px;padding:.875rem;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s}
-.modal-btn:hover{background:var(--blue-mid)}
-.modal-error{font-size:12px;color:#ff4466;margin-bottom:1rem;display:none}
-.report-item{background:var(--navy2);border:1px solid var(--border);border-radius:6px;padding:.875rem 1rem;margin-bottom:.5rem;cursor:pointer;transition:border-color .2s;display:flex;justify-content:space-between;align-items:center;text-decoration:none}
-.report-item:hover{border-color:var(--blue-light)}
-.report-name{font-size:14px;font-weight:600;color:var(--white)}
-.report-meta{font-size:11px;color:var(--grey)}
-.modal-hint{margin-top:1rem;font-size:11px;color:var(--grey2);line-height:1.6;padding:.75rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px dashed rgba(90,172,255,.15)}
-
 /* FOOTER */
 footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2rem}
 .footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:3rem;padding-bottom:3rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
@@ -224,55 +203,6 @@ footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2r
 </head>
 <body class="lang-pt">
 
-<!-- ══════════════════════════════════════════════════════
-     LOGIN MODAL — Área Pilotos
-     [EDITAR PASSWORD]: procura TEAM_PASSWORD no script abaixo
-     [EDITAR REPORTS]: procura "RACE REPORTS" no script abaixo
-══════════════════════════════════════════════════════ -->
-<div class="modal-overlay" id="loginModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div id="loginForm">
-      <div class="modal-title">
-        <span class="pt">Área Pilotos</span>
-        <span class="en">Pilots Area</span>
-      </div>
-      <p class="modal-sub">
-        <span class="pt">Introduz a password da equipa para aceder aos Race Reports.</span>
-        <span class="en">Enter the team password to access Race Reports.</span>
-      </p>
-      <div class="modal-error" id="loginError">
-        <span class="pt">Password incorreta.</span>
-        <span class="en">Incorrect password.</span>
-      </div>
-      <input class="modal-input" type="password" id="loginPass" placeholder="Password" onkeydown="if(event.key==='Enter')checkLogin()">
-      <button class="modal-btn" onclick="checkLogin()">
-        <span class="pt">Entrar</span><span class="en">Login</span>
-      </button>
-    </div>
-    <div id="reportsArea" style="display:none">
-      <div class="modal-title" style="margin-bottom:1rem">Race Reports</div>
-      <div id="reportsList"></div>
-      <div class="modal-hint">
-        <span class="pt">
-          <strong>Como adicionar reports:</strong><br>
-          1. Exporta o JSON do Race Report<br>
-          2. Faz upload do ficheiro no GitHub (pasta /reports/)<br>
-          3. Edita o ficheiro HTML — procura "RACE REPORTS" no script<br>
-          4. Adiciona uma linha com o nome e URL do ficheiro
-        </span>
-        <span class="en">
-          <strong>How to add reports:</strong><br>
-          1. Export the JSON from Race Report<br>
-          2. Upload the file to GitHub (/reports/ folder)<br>
-          3. Edit the HTML file — find "RACE REPORTS" in the script<br>
-          4. Add a line with the name and URL of the file
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- NAV -->
 <nav>
   <img src="data:image/png;base64,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" alt="Atlantic Raceline" class="nav-logo">
@@ -291,7 +221,6 @@ footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2r
     <a href="https://www.twitch.tv/atlanticraceline" target="_blank" class="nav-btn twitch">Twitch</a>
     <a href="https://www.instagram.com/atlantic.raceline" target="_blank" class="nav-btn ig">Instagram</a>
     <a href="https://discord.gg/z2qWtmRj9k" target="_blank" class="nav-btn discord">Discord</a>
-    <button class="nav-btn login" onclick="openModal()">🔒 <span class="pt">Pilotos</span><span class="en">Pilots</span></button>
   </div>
 </nav>
 
@@ -385,17 +314,17 @@ footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2r
   <div class="container">
     <div class="eyebrow"><span class="pt">Em Breve</span><span class="en">Coming Soon</span></div>
     <h2 class="sec-title"><span class="pt">Próxima Corrida</span><span class="en">Next Race</span></h2>
-
     <!--
     [EDITAR: PRÓXIMA CORRIDA]
-    Quando houver corrida remove o empty-box e descomenta o next-race-card.
-    Altera: [CIRCUITO], [PAÍS], [CAMPEONATO], [DURAÇÃO], [DIA/MÊS], [HORA]
+    Quando houver corrida:
+    1. Remove o empty-box
+    2. Descomenta o next-race-card
+    3. Substitui [CIRCUITO], [PAÍS], [CAMPEONATO], [DURAÇÃO], [DIA/MÊS], [HORA]
     -->
     <div class="empty-box">
       <span class="pt">Sem corrida agendada — em breve.</span>
       <span class="en">No race scheduled — coming soon.</span>
     </div>
-
     <!--
     <div class="next-race-card">
       <div>
@@ -441,7 +370,7 @@ footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2r
         <div class="driver-alias">MOI</div>
         <div class="driver-desc">
           <span class="pt">Um dos fundadores da Atlantic Raceline. Segundo piloto mais rápido da equipa, destaca-se pela gestão de pneus em stints longos e pela capacidade de manter ritmo consistente.</span>
-          <span class="en">One of Atlantic Raceline's founders. The team's second fastest driver, known for tyre management in long stints and the ability to maintain a consistent pace.</span>
+          <span class="en">One of Atlantic Raceline's founders. The team's second fastest driver, known for tyre management in long stints and consistent pace.</span>
         </div>
       </div>
       <div class="driver-card">
@@ -471,13 +400,12 @@ footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2r
   <div class="container">
     <div class="eyebrow"><span class="pt">Campeonato</span><span class="en">Championship</span></div>
     <h2 class="sec-title"><span class="pt">Classificação</span><span class="en">Standings</span></h2>
-
     <!--
     [EDITAR: CLASSIFICAÇÃO]
     Quando estiverem num campeonato:
     1. Remove o empty-box
-    2. Descomenta o standings-table
-    3. Preenche os dados manualmente copiando do site do campeonato
+    2. Descomenta o bloco standings-table
+    3. Preenche manualmente copiando do site do campeonato
     4. A linha da Atlantic Raceline tem class="standings-row highlight"
     -->
     <div class="standings-table">
@@ -486,9 +414,8 @@ footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2r
         <span class="en">No active championship — standings coming soon.</span>
       </div>
     </div>
-
     <!--
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--grey);margin-bottom:.75rem;letter-spacing:.1em;text-transform:uppercase">[NOME DO CAMPEONATO] · LMGT3 · 2026</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--grey);margin-bottom:.75rem;letter-spacing:.1em;text-transform:uppercase">[NOME CAMPEONATO] · LMGT3 · 2026</div>
     <div class="standings-table">
       <div class="standings-header">
         <span>#</span><span><span class="pt">Equipa</span><span class="en">Team</span></span><span>PTS</span><span>GAP</span>
@@ -517,9 +444,9 @@ footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2r
     <h2 class="sec-title"><span class="pt">Resultados</span><span class="en">Results</span></h2>
     <!--
     [EDITAR: RESULTADOS]
-    Para adicionar: copia o bloco result-item e edita.
+    Para adicionar: copia o bloco result-item, descomenta e edita.
     Para apagar: remove o bloco completo.
-    Quando tiveres resultados, remove o empty-box.
+    Quando tiveres resultados remove o empty-box.
     -->
     <div class="results-list">
       <div class="empty-box" style="margin-top:0;border-top:1px solid var(--border)">
@@ -617,6 +544,7 @@ footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2r
     </div>
   </div>
   <div class="footer-bottom">
+    <!-- [EDITAR: Copyright] -->
     <div class="footer-copy">© 2026 Atlantic Raceline · <span class="pt">Todos os direitos reservados</span><span class="en">All rights reserved</span></div>
     <div class="footer-social">
       <a href="https://www.twitch.tv/atlanticraceline" target="_blank">Twitch</a>
@@ -627,82 +555,15 @@ footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2r
 </footer>
 
 <script>
-// ══════════════════════════════════════════════
-// LANGUAGE TOGGLE
-// ══════════════════════════════════════════════
+// [EDITAR: IDIOMA] — não precisas de alterar isto
 function setLang(lang) {
   document.body.className = 'lang-' + lang;
   document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
   document.getElementById('btn-en').classList.toggle('active', lang === 'en');
   localStorage.setItem('ar_lang', lang);
 }
-// Load saved preference
 const savedLang = localStorage.getItem('ar_lang') || 'pt';
 setLang(savedLang);
-
-// ══════════════════════════════════════════════
-// LOGIN — ÁREA PILOTOS
-//
-// [EDITAR PASSWORD]: altera o valor abaixo
-// ══════════════════════════════════════════════
-const TEAM_PASSWORD = 'arteam2026';
-
-// ══════════════════════════════════════════════
-// RACE REPORTS
-//
-// [EDITAR: RACE REPORTS]
-// Para adicionar um report:
-// 1. Exporta o JSON do Race Report
-// 2. Faz upload no GitHub na pasta /reports/
-// 3. Adiciona um objeto à lista abaixo com:
-//    { name: "Circuito — Data", meta: "PX · 6H", url: "URL_DO_FICHEIRO" }
-//
-// Exemplo:
-// { name: "Interlagos — 19/07/26", meta: "P12 · 6H", url: "https://raw.githubusercontent.com/SEU_USER/SEU_REPO/main/reports/interlagos.json" }
-// ══════════════════════════════════════════════
-const RACE_REPORTS = [
-  // Adiciona os teus reports aqui:
-   { name: "Interlagos — 19/07/26", meta: "P12 · 6H", url: "https://drive.proton.me/urls/N0MV9BMZJC#ZbwkpCkguots" },
-];
-
-function openModal() {
-  document.getElementById('loginModal').classList.add('open');
-  setTimeout(() => document.getElementById('loginPass').focus(), 100);
-}
-function closeModal() {
-  document.getElementById('loginModal').classList.remove('open');
-  document.getElementById('loginPass').value = '';
-  document.getElementById('loginError').style.display = 'none';
-}
-function checkLogin() {
-  const pass = document.getElementById('loginPass').value;
-  if (pass === TEAM_PASSWORD) {
-    document.getElementById('loginForm').style.display = 'none';
-    const area = document.getElementById('reportsArea');
-    area.style.display = 'block';
-    const list = document.getElementById('reportsList');
-    if (RACE_REPORTS.length === 0) {
-      list.innerHTML = '<p style="font-size:13px;color:var(--grey2);margin-bottom:1rem">Sem reports disponíveis ainda.</p>';
-    } else {
-      list.innerHTML = RACE_REPORTS.map(r =>
-        `<a class="report-item" href="${r.url}" target="_blank">
-          <div>
-            <div class="report-name">${r.name}</div>
-            <div class="report-meta">${r.meta}</div>
-          </div>
-          <span style="color:var(--blue-light);font-size:18px">↗</span>
-        </a>`
-      ).join('');
-    }
-  } else {
-    document.getElementById('loginError').style.display = 'block';
-    document.getElementById('loginPass').value = '';
-    document.getElementById('loginPass').focus();
-  }
-}
-document.getElementById('loginModal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
 </script>
 </body>
 </html>
