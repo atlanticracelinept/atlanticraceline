@@ -122,12 +122,13 @@ section{padding:6rem 2rem}
 /* RESULTS */
 .results{background:var(--navy)}
 .results-list{margin-top:2rem}
-.result-item{display:grid;grid-template-columns:80px 1fr auto;align-items:center;gap:1.5rem;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);transition:background .15s}
+.result-item{display:grid;grid-template-columns:80px 1fr auto auto;align-items:center;gap:1rem;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);transition:background .15s}
 .result-item:first-child{border-top:1px solid var(--border)}
 .result-item:hover{background:rgba(30,111,200,.05)}
 .result-pos{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:900;color:var(--blue-light);line-height:1}
 .result-circuit{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--white);line-height:1}
 .result-meta{font-size:12px;color:var(--grey);margin-top:3px}
+.result-split{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:20px;background:rgba(90,172,255,.06);color:var(--grey);border:1px solid var(--border);white-space:nowrap}
 .result-badge{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .75rem;border-radius:20px;background:rgba(30,111,200,.15);color:var(--blue-light);border:1px solid rgba(90,172,255,.2);white-space:nowrap}
 
 /* LIVE */
@@ -187,6 +188,7 @@ footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2r
   .nr-date{border-left:none;border-top:1px solid var(--border);padding-left:0;padding-top:1.5rem}
   .result-item{grid-template-columns:60px 1fr}
   .result-badge{display:none}
+  .result-split{display:none}
   .contact-card{flex-direction:column}
   .standings-header,.standings-row{grid-template-columns:40px 1fr 60px}
   .standings-gap{display:none}
@@ -444,21 +446,40 @@ footer{background:var(--navy);border-top:1px solid var(--border);padding:3rem 2r
     <h2 class="sec-title"><span class="pt">Resultados</span><span class="en">Results</span></h2>
     <!--
     [EDITAR: RESULTADOS]
-    Para adicionar: copia o bloco result-item, descomenta e edita.
-    Para apagar: remove o bloco completo.
-    Quando tiveres resultados remove o empty-box.
+    Para adicionar um resultado, copia este bloco e edita:
+      result-pos    → posição (ex: P3)
+      result-circuit → circuito e país
+      result-meta   → campeonato, duração, classe
+      result-split  → split (ex: Split 1) — deixa vazio se não houver
+      result-badge  → rótulo à direita (ex: Special Event)
+
+    Para apagar um resultado, remove o bloco <div class="result-item"> completo.
     -->
     <div class="results-list">
-    
-  
+
       <div class="result-item">
         <div class="result-pos">P5</div>
         <div>
           <div class="result-circuit">WeatherTech Raceway Laguna Seca · EUA</div>
           <div class="result-meta">VP RACING special event · 4H · LMGT3</div>
         </div>
-        <div class="result-badge">P5</div>
+        <div class="result-split">Split 1</div>
+        <div class="result-badge">Special Event</div>
       </div>
+
+      <!--
+      EXEMPLO — copia e edita:
+      <div class="result-item">
+        <div class="result-pos">P?</div>
+        <div>
+          <div class="result-circuit">[CIRCUITO] · [PAÍS]</div>
+          <div class="result-meta">[CAMPEONATO] · [DURAÇÃO] · LMGT3</div>
+        </div>
+        <div class="result-split">[SPLIT]</div>
+        <div class="result-badge">[LABEL]</div>
+      </div>
+      -->
+
     </div>
   </div>
 </section>
